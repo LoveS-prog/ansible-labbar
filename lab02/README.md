@@ -1,8 +1,8 @@
-# Lab 2: Ad-hoc-kommandon
+# Lab 2: Köra adhoc kommandon på servers
 
-Ad-hoc-kommandon är enstaka kommandon som körs direkt från terminalen mot noderna i inventoryn, utan playbook.
+Adhoc kommandon kör man direkt från terminalen mot noderna i inventoryn, utan playbook.
 
-## Uppgift 1: Diskutrymme med `df -h /`
+## Uppgift 1: Diskutrymme på noderna
 
 ```bash
 ansible all -i inventory.ini -m command -a "df -h /"
@@ -17,10 +17,9 @@ Filesystem                         Size  Used Avail Use% Mounted on
 /dev/mapper/ubuntu--vg-ubuntu--lv   61G  5.8G   52G  11% /
 ```
 
+## Uppgift 2: Linuxdistribution via facts
 
-## Uppgift 2: Linux-distribution via facts
-
-Ansible samlar in information om varje maskin, så kallade facts, med modulen `setup`. Med `filter` plockar man ut bara de fält man vill ha, här Linux-distributionen.
+Ansible hämtar information om varje maskin, så kallade facts, med modulen `setup`. Med `filter` får man bara ut det man vill ha, här vilken distribution noderna kör.
 
 ```bash
 ansible all -i inventory.ini -m setup -a "filter=ansible_distribution*"
@@ -54,4 +53,3 @@ node2 | SUCCESS => {
     "changed": false
 }
 ```
-
