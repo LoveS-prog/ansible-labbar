@@ -1,0 +1,17 @@
+---
+- name: Installera och starta nginx
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Installera nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+    - name: Se till att nginx är igång och startar vid boot
+      service:
+        name: nginx
+        state: started
+        enabled: true
