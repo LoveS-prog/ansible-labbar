@@ -17,7 +17,6 @@ Filesystem                         Size  Used Avail Use% Mounted on
 /dev/mapper/ubuntu--vg-ubuntu--lv   61G  5.8G   52G  11% /
 ```
 
-![df -h / på båda noderna](df.png)
 
 ## Uppgift 2: Linux-distribution via facts
 
@@ -56,4 +55,3 @@ node2 | SUCCESS => {
 }
 ```
 
-![Distribution på båda noderna](distribution.png)
