@@ -1,0 +1,17 @@
+---
+- name: Installera nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Lägg in en enkel startsida
+  ansible.builtin.copy:
+    content: "Webbservern installerad med en roll i Ansible\n"
+    dest: /var/www/html/index.html
+  notify: Starta om nginx
+
+- name: Se till att nginx är igång och startar vid boot
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
