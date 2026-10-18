@@ -1,0 +1,24 @@
+---
+- name: Installera grundpaket
+  ansible.builtin.apt:
+    name:
+      - curl
+      - htop
+      - tree
+    state: present
+    update_cache: true
+
+- name: Skapa devops_admin och lägg till i gruppen sudo
+  ansible.builtin.user:
+    name: devops_admin
+    state: present
+    create_home: true
+    shell: /bin/bash
+    groups: sudo
+    append: true
+
+- name: Lägg in publika nyckeln för devops_admin
+  ansible.posix.authorized_key:
+    user: devops_admin
+    state: present
+    key: "{{ lookup('file', '~/.ssh/devops_admin.pub') }}"

@@ -1,0 +1,17 @@
+---
+- name: Installera nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Lägg in startsidan från mallen
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+  notify: Starta om nginx
+
+- name: Se till att nginx är igång och startar vid boot
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
