@@ -1,0 +1,14 @@
+---
+- name: Installera MariaDB och Pythonbiblioteket för MySQL
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+    update_cache: true
+
+- name: Se till att MariaDB är igång och startar vid boot
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: true

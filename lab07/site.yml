@@ -1,0 +1,27 @@
+---
+- name: Gemensam grund på alla noder
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Webbserver
+  hosts: webservers
+  become: true
+  roles:
+    - webserver
+
+- name: Databasserver
+  hosts: dbservers
+  become: true
+  roles:
+    - database
+  tasks:
+    - name: Skapa databasanvändaren appuser med lösenordet från vault
+      community.mysql.mysql_user:
+        name: appuser
+        password: "{{ vault_db_password }}"
+        state: present
+        login_user: root
+        login_unix_socket: /run/mysqld/mysqld.sock
+      no_log: true
