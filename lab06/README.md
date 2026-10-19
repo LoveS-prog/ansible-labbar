@@ -41,3 +41,9 @@
 ## Resultat i webbläsaren
 
 ![Den renderade sidan](webbsida.png)
+
+## Kommando
+
+```bash
+ansible-playbook -i inventory.ini site.yml -K
+```

@@ -28,7 +28,7 @@ ssh-keygen -t ed25519 -f ~/.ssh/devops_admin -C "devops_admin@controlnode"
       ansible.posix.authorized_key:
         user: devops_admin
         state: present
-        key: "{{ lookup('file', '~/.ssh/devops_admin.pub') }}"
+        key: "{{ lookup('file', 'devops_admin.pub') }}"
 ```
 
 ## Kommando
