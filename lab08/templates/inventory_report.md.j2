@@ -1,0 +1,61 @@
+# CMDB rapport
+
+Genererad av Ansible {{ ansible_facts['date_time']['date'] }} klockan {{ ansible_facts['date_time']['time'] }}
+
+{% for host in groups['all'] | sort %}
+{% set f = hostvars[host]['ansible_facts'] %}
+## {{ f['hostname'] }}
+
+| CI | Värde |
+|---|---|
+| Hostname | {{ f['hostname'] }} |
+| Grupper | {{ hostvars[host]['group_names'] | join(', ') }} |
+| OS | {{ f['distribution'] }} {{ f['distribution_version'] }} |
+| Kernel | {{ f['kernel'] }} |
+| CPU | {{ f['processor'][2] }} |
+| Antal vCPU | {{ f['processor_vcpus'] }} |
+| RAM totalt | {{ f['memtotal_mb'] }} MB |
+| RAM ledigt | {{ f['memfree_mb'] }} MB |
+| RAM tillgängligt | {{ f['memory_mb']['nocache']['free'] }} MB |
+| IP adresser | {{ f['all_ipv4_addresses'] | join(', ') }} |
+| Upptid | {{ f['uptime_seconds'] // 86400 }} dagar |
+| Installerade paket | {{ f['packages'] | length }} st |
+
+### Diskar
+
+| Monterad på | Enhet | Storlek | Ledigt |
+|---|---|---|---|
+{% for m in f['mounts'] %}
+| {{ m['mount'] }} | {{ m['device'] }} | {{ (m['size_total'] / 1073741824) | round(1) }} GB | {{ (m['size_available'] / 1073741824) | round(1) }} GB |
+{% endfor %}
+
+<details>
+<summary>Alla installerade paket</summary>
+
+{% for name in f['packages'] | sort %}
+- {{ name }} {{ f['packages'][name][0]['version'] }}
+{% endfor %}
+
+</details>
+
+{% endfor %}
+## Relationer och beroenden
+
+Pilen går från den som pratar till den som tar emot.
+
+| Från | Till | Hur |
+|---|---|---|
+| ls-controlnode | ls-node1, ls-node2 | Ansible via SSH, port 22 |
+| Användare | ls-node1 | Webbsidan via HTTP, port 80 |
+| ls-node1 (webb) | ls-node2 (databas) | Webben ska använda databasen, port 3306 |
+
+I labben är webbsidan statisk, så beroendet mellan webb och databas är planerat men inte aktivt än.
+
+## Om något går ner
+
+| Går ner | Vad händer |
+|---|---|
+| ls-node1 | Webbsidan går inte att nå. Databasen påverkas inte. |
+| ls-node2 | Databasen går inte att nå. En app på webbservern som använder databasen skulle sluta fungera. |
+| ls-controlnode | Servrarna fortsätter att fungera, men de kan inte konfigureras med Ansible. |
+| avahi (mDNS) | Namnen ls-node1.local och ls-node2.local fungerar inte, så Ansible hittar inte noderna. |
