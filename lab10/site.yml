@@ -1,0 +1,12 @@
+---
+- name: Databasserver
+  hosts: dbservers
+  become: true
+  roles:
+    - database
+
+- name: Webbserver med Flask, Gunicorn och Nginx
+  hosts: webservers
+  become: true
+  roles:
+    - webapp

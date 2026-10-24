@@ -1,0 +1,23 @@
+from flask import Flask
+import pymysql
+
+app = Flask(__name__)
+
+DB_HOST = "{{ hostvars[groups['dbservers'][0]]['ansible_facts']['default_ipv4']['address'] }}"
+DB_USER = "appuser"
+DB_PASSWORD = "{{ vault_db_password }}"
+DB_NAME = "labbdb"
+
+
+@app.route("/")
+def index():
+    try:
+        conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD,
+                               database=DB_NAME, connect_timeout=3)
+        with conn.cursor() as cur:
+            cur.execute("SELECT text FROM meddelanden WHERE id = 1")
+            text = cur.fetchone()[0]
+        conn.close()
+        return f"<h1>VG: node1 hämtade data från databasen på {DB_HOST}</h1><p>{text}</p>"
+    except Exception as e:
+        return f"<h1>Fel vid anslutning till databasen på {DB_HOST}</h1><p>{e}</p>"

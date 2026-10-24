@@ -1,0 +1,11 @@
+---
+- name: Starta om labbapp
+  ansible.builtin.systemd:
+    name: labbapp
+    state: restarted
+    daemon_reload: true
+
+- name: Starta om nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

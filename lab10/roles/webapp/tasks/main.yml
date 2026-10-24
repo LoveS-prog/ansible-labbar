@@ -1,0 +1,71 @@
+---
+- name: Installera Flask, Gunicorn, PyMySQL och Nginx
+  ansible.builtin.apt:
+    name:
+      - python3-flask
+      - gunicorn
+      - python3-pymysql
+      - nginx
+    state: present
+    update_cache: true
+
+- name: Skapa mappen för appen
+  ansible.builtin.file:
+    path: /opt/labbapp
+    state: directory
+    mode: "0755"
+
+- name: Lägg in appen med databasens IP adress
+  ansible.builtin.template:
+    src: app.py.j2
+    dest: /opt/labbapp/app.py
+    owner: root
+    group: www-data
+    mode: "0640"
+  notify: Starta om labbapp
+
+- name: Gör appen till en systemd tjänst
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/labbapp.service
+    content: |
+      [Unit]
+      Description=Labbapp med Flask och Gunicorn
+      After=network.target
+
+      [Service]
+      User=www-data
+      Group=www-data
+      WorkingDirectory=/opt/labbapp
+      ExecStart=/usr/bin/gunicorn --bind 127.0.0.1:8000 app:app
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: "0644"
+  notify: Starta om labbapp
+
+- name: Se till att labbapp är igång och startar vid boot
+  ansible.builtin.systemd:
+    name: labbapp
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: Låt Nginx skicka besökare vidare till appen
+  ansible.builtin.copy:
+    dest: /etc/nginx/sites-available/default
+    content: |
+      server {
+          listen 80 default_server;
+          location / {
+              proxy_pass http://127.0.0.1:8000;
+          }
+      }
+    mode: "0644"
+  notify: Starta om nginx
+
+- name: Se till att Nginx är igång och startar vid boot
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
