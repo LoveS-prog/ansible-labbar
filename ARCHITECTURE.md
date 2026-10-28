@@ -1,7 +1,9 @@
 # Arkitekturmotivering och systemdokumentation
 
 **Författare:** Love Silventoinen
+
 **Datum:** 2026-10-28
+
 **Kurs:** Automation med Ansible
 
 ---
