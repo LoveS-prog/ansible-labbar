@@ -1,0 +1,14 @@
+---
+- name: Fel ordning med flit
+  hosts: node2
+  become: true
+  tasks:
+    - name: Skapa konfigurationsfil
+      ansible.builtin.copy:
+        content: "server { listen 80; }"
+        dest: /etc/nginx/sites-available/default
+
+    - name: Installera Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
