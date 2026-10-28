@@ -1,0 +1,15 @@
+---
+- name: Samla in information till CMDB från alla noder
+  hosts: all
+
+  tasks:
+    - name: Samla in installerade paket
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Skapa rapporten inventory_report.md på controlnode
+      ansible.builtin.template:
+        src: inventory_report.md.j2
+        dest: "{{ playbook_dir }}/inventory_report.md"
+      delegate_to: localhost
+      run_once: true
