@@ -105,3 +105,17 @@ root    localhost
 *.retry
 *.log
 ```
+
+## Skärmdumpar
+
+vault.yml är oläsbar i råformat på GitHub:
+
+![vault.yml i råformat på GitHub](vault-github.png)
+
+Körning med lösenordsfilen:
+
+![Körning med lösenordsfilen](vault-korning.png)
+
+Databasanvändaren appuser finns:
+
+![appuser i databasen](vault-verifiering.png)
